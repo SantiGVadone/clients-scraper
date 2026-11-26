@@ -1,0 +1,68 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62",
+  "OSM3S_responseTime": "123 ms",
+  "elements": [
+    {
+      "type": "node",
+      "id": 123456789,
+      "lat": -34.6581234,
+      "lon": -58.9256789,
+      "tags": {
+        "amenity": "dentist",
+        "name": "Dentista Centro",
+        "phone": "+54 11 4455 6677",
+        "website": "https://dentistacentro.com.ar",
+        "addr:street": "Av. Libertador",
+        "addr:housenumber": "1234"
+      }
+    },
+    {
+      "type": "way",
+      "id": 987654321,
+      "center": {
+        "lat": -34.6612345,
+        "lon": -58.9312345
+      },
+      "tags": {
+        "healthcare": "dentist",
+        "name": "Clínica Dental Merlo",
+        "contact:phone": "+54 11 2233 4455",
+        "contact:website": "clinicadentalmerlo.com.ar",
+        "addr:street": "Calle Sarmiento"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 5555555,
+      "center": {
+        "lat": -34.6700001,
+        "lon": -58.9400002
+      },
+      "tags": {
+        "amenity": "dentist",
+        "name": "Red de dentistas del oeste"
+      }
+    },
+    {
+      "type": "node",
+      "id": 111111111,
+      "lat": -34.65,
+      "lon": -58.92,
+      "tags": {
+        "amenity": "dentist",
+        "phone": "+54 11 0000 0000"
+      }
+    },
+    {
+      "type": "node",
+      "id": 222222222,
+      "lat": -34.652,
+      "lon": -58.922,
+      "tags": {
+        "amenity": "dentist",
+        "name": "Consultorio Norte"
+      }
+    }
+  ]
+}
