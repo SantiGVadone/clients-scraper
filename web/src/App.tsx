@@ -8,7 +8,7 @@ import {
 } from "./api";
 import { initialForm, toSearchParams, type FormState } from "./form";
 import { FiltersPanel } from "./components/FiltersPanel";
-import { ResultsTable } from "./components/ResultsTable";
+import { ResultsSkeleton, ResultsTable } from "./components/ResultsTable";
 import { RouteMap } from "./components/RouteMap";
 import { RoutePlanner } from "./components/RoutePlanner";
 import { RouteResults } from "./components/RouteResults";
@@ -119,54 +119,86 @@ export default function App() {
     );
   };
 
+  const currentStep = routeResult ? 3 : response ? 2 : 1;
+  const steps = ["Buscar", "Elegir", "Recorrido"];
+
   return (
     <>
-      <header>
-        <h1>ClientsScraper</h1>
-        <p>Encontrá negocios locales para ofrecerles tus productos.</p>
+      <header className="site-header">
+        <div className="header-inner">
+          <div className="brand">
+            <h1>ClientsScraper</h1>
+            <p className="lede">Encontrá negocios para ofrecerles lo que vendés.</p>
+          </div>
+          <nav className="steps" aria-label="Pasos del flujo">
+            {steps.map((label, index) => {
+              const number = index + 1;
+              return (
+                <span
+                  key={label}
+                  className="step"
+                  aria-current={number === currentStep ? "step" : undefined}
+                >
+                  <b>{number}</b>
+                  <span className="step-label">{label}</span>
+                </span>
+              );
+            })}
+          </nav>
+        </div>
       </header>
 
-      <main>
-        <SearchForm
+      <main className="workspace">
+        <div className="search-shell">
+          <SearchForm
+            form={form}
+            providers={providers}
+            response={response}
+            loading={loading}
+            onChange={update}
+            onSubmit={() => void handleSubmit()}
+          />
+        </div>
+        <FiltersPanel
           form={form}
-          providers={providers}
-          loading={loading}
+          capabilities={capabilities}
+          resultCount={response?.results.length}
           onChange={update}
-          onSubmit={() => void handleSubmit()}
         />
-        <FiltersPanel form={form} capabilities={capabilities} onChange={update} />
 
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="error" role="alert">
+            <strong>No pudimos completar la acción.</strong>
+            <p>{error}</p>
+            <p className="hint">Revisá los datos y probá otra vez.</p>
+          </div>
+        )}
 
         {response && (
           <>
-            <section className="card">
+            <section
+              className="results-section"
+              aria-labelledby="results-title"
+              aria-live="polite"
+              aria-busy={loading}
+            >
               <div className="results-header">
-                <h2>Resultados</h2>
-                <div>
-                  <span className="badge">provider: {response.provider}</span>
-                  <span className="badge">
-                    {response.fromCache ? "desde caché" : "consulta nueva"}
-                  </span>
-                  <span className="badge">
-                    {response.results.length} de {response.total}
-                  </span>
-                  {lastParams && (
-                    <a
-                      className={`button ${response.results.length === 0 ? "disabled" : ""}`}
-                      href={exportCsvUrl(lastParams)}
-                      download="clientscraper.csv"
-                      aria-disabled={response.results.length === 0}
-                    >
-                      Exportar CSV
-                    </a>
-                  )}
-                </div>
+                <h2 id="results-title">Elegí a quién visitar</h2>
+                {lastParams && (
+                  <a
+                    className={`button button--quiet ${response.results.length === 0 ? "disabled" : ""}`}
+                    href={exportCsvUrl(lastParams)}
+                    download="clientscraper.csv"
+                    aria-disabled={response.results.length === 0}
+                  >
+                    Exportar CSV
+                  </a>
+                )}
               </div>
 
               {response.warnings.length > 0 && (
                 <div className="warnings">
-                  <strong>Advertencias</strong>
+                  <strong>Tené en cuenta</strong>
                   <ul>
                     {response.warnings.map((warning) => (
                       <li key={warning}>{warning}</li>
@@ -175,32 +207,34 @@ export default function App() {
                 </div>
               )}
 
-              <ResultsTable results={response.results} />
+              {loading ? <ResultsSkeleton /> : <ResultsTable results={response.results} />}
             </section>
 
-            <RoutePlanner
-              address={originAddress}
-              origin={origin}
-              mode={mode}
-              geocoding={geocoding}
-              planning={planning}
-              canPlan={response.results.length > 0}
-              onAddressChange={setOriginAddress}
-              onGeocode={() => void handleGeocode()}
-              onModeChange={setMode}
-              onPlan={() => void handlePlan()}
-            />
+            <section className="route-step" aria-labelledby="origin-title">
+              <RoutePlanner
+                address={originAddress}
+                origin={origin}
+                mode={mode}
+                geocoding={geocoding}
+                planning={planning}
+                canPlan={response.results.length > 0}
+                onAddressChange={setOriginAddress}
+                onGeocode={() => void handleGeocode()}
+                onModeChange={setMode}
+                onPlan={() => void handlePlan()}
+              />
 
-            {routeResult && (
-              <>
-                <RouteResults
-                  result={routeResult}
-                  selectedWithoutLocation={selectedWithoutLocation}
-                  onToggleWithoutLocation={toggleWithoutLocation}
-                />
-                <RouteMap result={routeResult} />
-              </>
-            )}
+              {routeResult && (
+                <div className="route-layout">
+                  <RouteResults
+                    result={routeResult}
+                    selectedWithoutLocation={selectedWithoutLocation}
+                    onToggleWithoutLocation={toggleWithoutLocation}
+                  />
+                  <RouteMap result={routeResult} />
+                </div>
+              )}
+            </section>
           </>
         )}
       </main>
