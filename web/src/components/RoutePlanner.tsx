@@ -26,20 +26,46 @@ export function RoutePlanner({
   onPlan,
 }: Props) {
   return (
-    <section className="card">
-      <h2>Recorrido</h2>
-      <p className="hint">Por ahora el origen se indica escribiendo una dirección.</p>
-      <div className="grid">
+    <section className="route-setup" aria-labelledby="origin-title">
+      <p className="eyebrow">Paso 3</p>
+      <h2 id="origin-title">¿Desde dónde salís?</h2>
+      <p className="hint">Escribí tu dirección de salida para ordenar las paradas.</p>
+
+      <form
+        className="route-origin"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onGeocode();
+        }}
+      >
         <label>
-          Dirección de origen
+          Dirección
           <input
             value={address}
             placeholder="Ej. Av. Libertador 1234, Merlo"
             onChange={(event) => onAddressChange(event.target.value)}
           />
         </label>
-        <label>
-          Enlaces para
+        <button type="submit" disabled={geocoding || !address.trim()}>
+          {geocoding ? "Ubicando…" : "Usar dirección"}
+        </button>
+      </form>
+
+      {geocoding && (
+        <p className="hint" role="status">
+          Buscando la dirección…
+        </p>
+      )}
+
+      {origin && (
+        <p className="origin-confirmed" role="status">
+          Origen confirmado: {origin.label}. Ya podés armar el recorrido.
+        </p>
+      )}
+
+      <div className="route-actions">
+        <label className="route-mode">
+          Preparar enlaces para
           <select
             value={mode}
             onChange={(event) => onModeChange(event.target.value as RouteMode)}
@@ -48,24 +74,10 @@ export function RoutePlanner({
             <option value="desktop">Computadora (10 paradas por tramo)</option>
           </select>
         </label>
-      </div>
-      <div className="actions">
-        <button type="button" onClick={onGeocode} disabled={geocoding || !address.trim()}>
-          {geocoding ? "Ubicando…" : "Ubic origen"}
-        </button>
-        <button
-          type="button"
-          onClick={onPlan}
-          disabled={!origin || !canPlan || planning}
-        >
-          {planning ? "Calculando…" : "Calcular recorrido"}
+        <button type="button" onClick={onPlan} disabled={!origin || !canPlan || planning}>
+          {planning ? "Calculando…" : "Armar recorrido"}
         </button>
       </div>
-      {origin && (
-        <p className="hint">
-          Origen: {origin.label} ({origin.lat.toFixed(5)}, {origin.lng.toFixed(5)})
-        </p>
-      )}
     </section>
   );
 }
