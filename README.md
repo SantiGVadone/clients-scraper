@@ -59,6 +59,8 @@ Automatizar el navegador contra Google Maps (Playwright/Selenium) viola los tér
 
 ## Google Places API (New): uso gratuito
 
+**Estado en la app:** implementado. Se habilita automáticamente cuando `GOOGLE_PLACES_API_KEY` está configurada; `auto` sigue resolviendo a OSM y Google se elige explícitamente en el selector. La búsqueda usa `textQuery` con rubro + zona (no `locationBias`, porque Google lo ignora cuando el texto ya incluye la zona). El gasto se limita con `GOOGLE_MAX_PAGES` (default 3) y `GOOGLE_MAX_REQUESTS_PER_DAY` (default 30).
+
 Desde marzo de 2025 Google reemplazó el crédito de USD 200 mensuales por un **cupo gratuito mensual por SKU**:
 
 | Categoría | Requests gratis / mes |
