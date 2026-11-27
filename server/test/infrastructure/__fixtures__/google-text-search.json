@@ -1,0 +1,27 @@
+{
+  "places": [
+    {
+      "id": "google-place-1",
+      "displayName": { "text": "Dentista Ejemplo", "languageCode": "es" },
+      "formattedAddress": "Av. Sarmiento 1234, Merlo, Buenos Aires",
+      "location": { "latitude": -34.658, "longitude": -58.925 },
+      "googleMapsUri": "https://maps.google.com/?cid=1",
+      "businessStatus": "OPERATIONAL",
+      "rating": 4.7,
+      "userRatingCount": 123,
+      "websiteUri": "https://dentista-ejemplo.com.ar",
+      "nationalPhoneNumber": "3512345678"
+    },
+    {
+      "id": "google-place-1",
+      "displayName": { "text": "Dentista Ejemplo (duplicado)", "languageCode": "es" },
+      "rating": 4.8
+    },
+    {
+      "id": "google-place-2",
+      "displayName": { "text": "Consultorio sin web", "languageCode": "es" },
+      "formattedAddress": "Calle Falsa 123, Merlo, Buenos Aires"
+    }
+  ],
+  "nextPageToken": "token-de-prueba-pagina-2"
+}
