@@ -15,6 +15,10 @@ const schema = z.object({
     .min(1)
     .default("ClientsScraper/0.1 (dev; configurar OSM_USER_AGENT en .env)"),
   GOOGLE_PLACES_API_KEY: z.string().default(""),
+  GOOGLE_LANGUAGE_CODE: z.string().min(2).default("es"),
+  GOOGLE_REGION_CODE: z.string().length(2).default("AR"),
+  GOOGLE_MAX_PAGES: z.coerce.number().int().positive().default(3),
+  GOOGLE_MAX_REQUESTS_PER_DAY: z.coerce.number().int().positive().default(30),
 });
 
 const parsed = schema.safeParse(process.env);
