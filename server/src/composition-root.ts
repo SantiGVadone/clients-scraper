@@ -23,7 +23,9 @@ import { registerSearchRoutes } from "./http/routes/search";
 
 /** Único lugar donde se elige qué provider se usa por defecto y cuáles están activos. */
 const DEFAULT_PROVIDER: ProviderName = "osm";
-const ENABLED_PROVIDERS: readonly ProviderName[] = ["osm"];
+const ENABLED_PROVIDERS: readonly ProviderName[] = env.GOOGLE_PLACES_API_KEY
+  ? ["osm", "google"]
+  : ["osm"];
 
 export function createApp(): FastifyInstance {
   // Un solo cliente Nominatim: /api/search y /api/geocode comparten el límite de 1 req/s.
@@ -32,7 +34,13 @@ export function createApp(): FastifyInstance {
 
   const providers: Record<ProviderName, PlacesProvider> = {
     osm: createOsmProvider({ nominatim, overpass }),
-    google: createGooglePlacesProvider(),
+    google: createGooglePlacesProvider({
+      apiKey: env.GOOGLE_PLACES_API_KEY,
+      languageCode: env.GOOGLE_LANGUAGE_CODE,
+      regionCode: env.GOOGLE_REGION_CODE,
+      maxPages: env.GOOGLE_MAX_PAGES,
+      maxRequestsPerDay: env.GOOGLE_MAX_REQUESTS_PER_DAY,
+    }),
   };
 
   const descriptors: ProviderDescriptor[] = (Object.keys(providers) as ProviderName[]).map(
